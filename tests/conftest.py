@@ -49,7 +49,7 @@ def start_background_loop(stop_threads, loop: asyncio.AbstractEventLoop) -> None
     loop.close()
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 async def fake_cloud(aiohttp_server, ssl_ctx):
     """Defines the testserver funcarg"""
 
@@ -85,6 +85,7 @@ async def fake_cloud(aiohttp_server, ssl_ctx):
 def fake_home(fake_cloud):
     home = Home()
     with no_ssl_verification():
+        fake_cloud.resetServer()
         lookup_url = "{}/getHost".format(fake_cloud.url)
         #    home.download_configuration = fake_home_download_configuration
         home._connection = Connection()
@@ -106,6 +107,7 @@ async def no_ssl_fake_async_home(fake_cloud, event_loop):
         home._connection._websession.post, ssl=False
     )
 
+    fake_cloud.resetServer()
     lookup_url = "{}/getHost".format(fake_cloud.url)
     home._fake_cloud = fake_cloud
     home.set_auth_token(

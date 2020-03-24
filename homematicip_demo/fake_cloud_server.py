@@ -13,25 +13,28 @@ class AsyncFakeCloudServer:
     """ a fake server to act as the HMIP cloud"""
 
     # region __init__ & helper functions
-    def __init__(self, home_path=Path(__file__).parent.joinpath("json_data/home.json")):
+    def resetServer(self,hhome_path=Path(__file__).parent.joinpath("json_data/home.json")):
         with open(home_path, encoding="utf-8") as file:
             self.data = json.load(file, encoding="UTF-8")
-            self.sgtin = "3014F711A000000BAD0C0DED"
-            self.client_auth_token = (
-                hashlib.sha512(str(self.sgtin + "jiLpVitHvWnIGD1yo7MA").encode("utf-8"))
-                .hexdigest()
-                .upper()
-            )
+        self.sgtin = "3014F711A000000BAD0C0DED"
+        self.client_auth_token = (
+            hashlib.sha512(str(self.sgtin + "jiLpVitHvWnIGD1yo7MA").encode("utf-8"))
+            .hexdigest()
+            .upper()
+        )
 
-            self.client_token_map = {
-                "00000000-0000-0000-0000-000000000000": "8A45BAA53BE37E3FCA58E9976EFA4C497DAFE55DB997DB9FD685236E5E63ED7DE"
-            }
+        self.client_token_map = {
+            "00000000-0000-0000-0000-000000000000": "8A45BAA53BE37E3FCA58E9976EFA4C497DAFE55DB997DB9FD685236E5E63ED7DE"
+        }
 
-            self.pin = None
+        self.pin = None
 
-            self.client_auth_waiting = None  # used in auth
-            self.home_id = "00000000-0000-0000-0000-000000000001"
-            self.ws = None
+        self.client_auth_waiting = None  # used in auth
+        self.home_id = "00000000-0000-0000-0000-000000000001"
+        self.ws = None
+
+    def __init__(self, home_path=Path(__file__).parent.joinpath("json_data/home.json")):
+        self.resetServer(home_path)
 
     def __del__(self):
         if self.ws:
